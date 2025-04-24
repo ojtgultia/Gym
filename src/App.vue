@@ -1,30 +1,55 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import { ref, onMounted } from 'vue'
+import { supabase } from './supabase'
+import AuthPage from './components/AuthPage.vue'
+import SessionList from './components/SessionList.vue'
+
+const session = ref(null)
+
+onMounted(() => {
+  supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+    session.value = currentSession
+  })
+
+  supabase.auth.onAuthStateChange((_event, currentSession) => {
+    session.value = currentSession
+  })
+})
 </script>
 
 <template>
   <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+    <template v-if="session">
+      <div class="min-h-screen bg-gray-100">
+        <nav class="bg-white shadow-sm">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+              <div class="flex items-center">
+                <h1 class="text-2xl font-bold text-gray-900">Gym Booking</h1>
+              </div>
+              <div class="flex items-center">
+                <button
+                  @click="() => supabase.auth.signOut()"
+                  class="text-sm text-gray-700 hover:text-gray-900"
+                >
+                  Sign Out
+                </button>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+          <div class="px-4 py-6 sm:px-0">
+            <SessionList />
+          </div>
+        </main>
+      </div>
+    </template>
+    <AuthPage v-else />
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
+<style>
+@import './style.css';
 </style>
