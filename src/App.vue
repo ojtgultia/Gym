@@ -63,6 +63,13 @@ const userEmail = computed(() => currentUser.value?.email || '')
 const userName = computed(() => currentUser.value?.full_name || '')
 const isAdmin = computed(() => currentUser.value?.role === 'admin')
 
+// Set initial active tab based on user role
+onMounted(() => {
+  if (isAdmin.value) {
+    activeTab.value = 'admin'
+  }
+})
+
 // Fetch current user data
 const fetchUserData = async () => {
   if (!session.value?.user?.id) return
@@ -119,62 +126,57 @@ onMounted(async () => {
         <!-- Main Content Area -->
         <main class="flex-grow">
           <div class="responsive-container py-4 sm:py-6 lg:py-8">
-            <!-- Welcome Section -->
-            <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <div>
-                <h1 class="text-xl sm:text-2xl font-semibold text-gray-900">Welcome, {{ userName }}</h1>
-                <p class="text-sm text-gray-600">{{ userEmail }}</p>
-              </div>
-              <!-- Quick Actions -->
-              <div v-if="isAdmin" class="w-full sm:w-auto">
-                <button 
-                  @click="activeTab = 'admin'"
-                  class="btn-primary w-full sm:w-auto"
-                >
-                  Manage Sessions
-                </button>
-              </div>
-            </div>
-
-            <!-- Content Container -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-              <!-- Content Header -->
-              <div class="px-4 sm:px-6 py-4 border-b border-gray-200">
-                <h2 class="text-lg font-medium text-gray-900">
-                  {{ activeTab === 'admin' ? 'Session Management' : 
-                     activeTab === 'sessions' ? 'Available Sessions' : 
-                     'My Appointments' }}
-                </h2>
+            <!-- Admin Dashboard -->
+            <template v-if="isAdmin">
+              <AdminDashboard 
+                :current-user="currentUser"
+              />
+            </template>
+            
+            <!-- Member Content -->
+            <template v-else>
+              <!-- Welcome Section -->
+              <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                  <h1 class="text-xl sm:text-2xl font-semibold text-gray-900">Welcome, {{ userName }}</h1>
+                  <p class="text-sm text-gray-600">{{ userEmail }}</p>
+                </div>
               </div>
 
-              <!-- Main Content -->
-              <div class="responsive-padding">
-                <Transition
-                  enter-active-class="transition-opacity duration-200 ease-out"
-                  enter-from-class="opacity-0"
-                  enter-to-class="opacity-100"
-                  leave-active-class="transition-opacity duration-150 ease-in"
-                  leave-from-class="opacity-100"
-                  leave-to-class="opacity-0"
-                >
-                  <AdminDashboard 
-                    v-if="isAdmin && activeTab === 'admin'"
-                    :current-user="currentUser"
-                  />
-                  <SessionList 
-                    v-else-if="activeTab === 'sessions'" 
-                    :theme="theme"
-                    :is-admin="isAdmin"
-                    :current-user="currentUser"
-                  />
-                  <UserAppointments 
-                    v-else 
-                    :theme="theme"
-                    :current-user="currentUser"
-                  />
-                </Transition>
+              <!-- Content Container -->
+              <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                <!-- Content Header -->
+                <div class="px-4 sm:px-6 py-4 border-b border-gray-200">
+                  <h2 class="text-lg font-medium text-gray-900">
+                    {{ activeTab === 'sessions' ? 'Available Sessions' : 'My Appointments' }}
+                  </h2>
+                </div>
+
+                <!-- Main Content -->
+                <div class="responsive-padding">
+                  <Transition
+                    enter-active-class="transition-opacity duration-200 ease-out"
+                    enter-from-class="opacity-0"
+                    enter-to-class="opacity-100"
+                    leave-active-class="transition-opacity duration-150 ease-in"
+                    leave-from-class="opacity-100"
+                    leave-to-class="opacity-0"
+                  >
+                    <SessionList 
+                      v-if="activeTab === 'sessions'" 
+                      :theme="theme"
+                      :is-admin="isAdmin"
+                      :current-user="currentUser"
+                    />
+                    <UserAppointments 
+                      v-else 
+                      :theme="theme"
+                      :current-user="currentUser"
+                    />
+                  </Transition>
+                </div>
               </div>
-            </div>
+            </template>
           </div>
         </main>
 
@@ -193,58 +195,75 @@ onMounted(async () => {
 </template>
 
 <style>
-@import './style.css';
+/* Theme Colors */
+:root {
+  --color-primary: #1a1a1a;
+  --color-primary-dark: #000000;
+  --color-secondary: #2d2d2d;
+  --color-secondary-light: #4a4a4a;
+  --color-accent: #666666;
+  --color-background: #f8f8f8;
+  --color-surface: #ffffff;
+  --color-text: #1a1a1a;
+  --color-text-secondary: #4a4a4a;
+}
 
 /* Layout Utilities */
 .max-w-7xl {
-  max-width: 80rem;
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.responsive-container {
+  @apply mx-auto px-6 lg:px-8 w-full;
+  max-width: 1440px;
+}
+
+.responsive-padding {
+  @apply px-6 lg:px-8 py-6;
 }
 
 /* Clean Card Style */
 .card {
-  @apply bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden;
+  @apply bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200;
 }
 
-/* Table Styles */
-.table-container {
-  @apply -mx-4 sm:mx-0 overflow-x-auto;
+/* Main Layout */
+#app {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-background);
+  color: var(--color-text);
 }
 
-.data-table {
-  @apply min-w-full divide-y divide-gray-200;
+.min-h-screen {
+  @apply w-full;
+  min-height: 100vh;
 }
 
-.table-header {
-  @apply bg-gray-50;
+/* Content Alignment */
+.content-wrapper {
+  @apply max-w-7xl mx-auto px-6 lg:px-8;
 }
 
-.table-header th {
-  @apply px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap;
+.section-title {
+  @apply text-2xl font-bold text-gray-900 mb-6;
 }
 
-.table-body {
-  @apply bg-white divide-y divide-gray-200;
+/* Button Styles */
+.btn-primary {
+  @apply px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200;
 }
 
-.table-row {
-  @apply hover:bg-gray-50;
-}
-
-.table-cell {
-  @apply px-4 sm:px-6 py-4 text-sm text-gray-900;
+.btn-secondary {
+  @apply px-4 py-2 bg-white text-gray-900 border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200;
 }
 
 /* Form Styles */
-.form-group {
-  @apply space-y-1 mb-4;
-}
-
 .form-input {
-  @apply block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm transition-colors duration-200;
-}
-
-.form-label {
-  @apply block text-sm font-medium text-gray-700;
+  @apply block w-full rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm transition-colors duration-200;
 }
 
 /* Badge Styles */
@@ -253,14 +272,14 @@ onMounted(async () => {
 }
 
 .badge-success {
-  @apply bg-green-100 text-green-800;
+  @apply bg-gray-100 text-gray-800;
 }
 
 .badge-warning {
-  @apply bg-yellow-100 text-yellow-800;
+  @apply bg-yellow-50 text-yellow-800;
 }
 
 .badge-error {
-  @apply bg-red-100 text-red-800;
+  @apply bg-red-50 text-red-800;
 }
 </style>

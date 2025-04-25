@@ -1,32 +1,74 @@
 <template>
-  <div class="min-h-screen flex">
+  <div class="min-h-screen flex bg-gradient-to-br from-gray-50 to-gray-100">
     <!-- Left side - Hero Image -->
-    <div class="hidden lg:flex lg:w-1/2 bg-indigo-600 relative">
-      <div class="absolute inset-0 bg-gradient-to-b from-indigo-600 to-indigo-800 opacity-90"></div>
+    <div class="hidden lg:flex lg:w-1/2 relative">
+      <img 
+        src="../assets/Gym1.jpg" 
+        alt="Gym Background" 
+        class="absolute inset-0 w-full h-full object-cover"
+      />
+      <div class="absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-black/80"></div>
       <div class="relative w-full flex items-center justify-center">
         <div class="px-12 text-center">
-          <h1 class="text-4xl font-bold text-white mb-6">Welcome to FitBook Pro</h1>
-          <p class="text-xl text-indigo-100">Your journey to fitness starts here. Book classes, track progress, and achieve your goals.</p>
+          <div class="mb-12">
+            <h1 class="text-6xl font-extrabold text-white mb-6 tracking-tight">
+              Welcome to <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">FitBook Pro</span>
+            </h1>
+            <p class="text-xl text-white/90 leading-relaxed max-w-lg mx-auto">
+              Your journey to fitness starts here. Book classes, track progress, and achieve your goals.
+            </p>
+          </div>
+          <div class="grid grid-cols-3 gap-6 max-w-2xl mx-auto">
+            <div class="group bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center transform transition-all duration-300 hover:scale-105 hover:bg-white/20">
+              <div class="bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg p-3 w-12 h-12 mx-auto mb-4 group-hover:from-indigo-400 group-hover:to-purple-400 transition-colors duration-300">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <h3 class="text-white font-semibold mb-2">Easy Booking</h3>
+              <p class="text-white/70 text-sm">Book your sessions in just a few clicks</p>
+            </div>
+            <div class="group bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center transform transition-all duration-300 hover:scale-105 hover:bg-white/20">
+              <div class="bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg p-3 w-12 h-12 mx-auto mb-4 group-hover:from-indigo-400 group-hover:to-purple-400 transition-colors duration-300">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+              <h3 class="text-white font-semibold mb-2">Track Progress</h3>
+              <p class="text-white/70 text-sm">Monitor your fitness journey</p>
+            </div>
+            <div class="group bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center transform transition-all duration-300 hover:scale-105 hover:bg-white/20">
+              <div class="bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg p-3 w-12 h-12 mx-auto mb-4 group-hover:from-indigo-400 group-hover:to-purple-400 transition-colors duration-300">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h3 class="text-white font-semibold mb-2">Achieve Goals</h3>
+              <p class="text-white/70 text-sm">Reach your fitness milestones</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Right side - Auth Form -->
-    <div class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-20 xl:px-24 bg-gray-50">
+    <div class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-20 xl:px-24">
       <div class="mx-auto w-full max-w-sm">
         <div class="text-center">
-          <h2 class="mt-6 text-3xl font-extrabold text-gray-900">
-            {{ isLogin ? 'Sign in to your account' : 'Create your account' }}
-          </h2>
-          <p class="mt-2 text-sm text-gray-600">
-            {{ isLogin ? "Don't have an account?" : 'Already have an account?' }}
-            <button
-              @click="toggleAuthMode"
-              class="font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:underline transition-colors duration-200"
-            >
-              {{ isLogin ? 'Create one now' : 'Sign in instead' }}
-            </button>
-          </p>
+          <div class="mb-10">
+            <h2 class="mt-6 text-4xl font-extrabold text-gray-900 tracking-tight">
+              {{ isLogin ? 'Welcome Back!' : 'Join Us Today' }}
+            </h2>
+            <p class="mt-3 text-sm text-gray-600">
+              {{ isLogin ? "Don't have an account?" : 'Already have an account?' }}
+              <button
+                @click="toggleAuthMode"
+                class="font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:underline transition-colors duration-200"
+              >
+                {{ isLogin ? 'Create one now' : 'Sign in instead' }}
+              </button>
+            </p>
+          </div>
         </div>
 
         <div class="mt-8">
@@ -43,7 +85,7 @@
                     v-model="selectedRole"
                     name="role"
                     required
-                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-200"
+                    class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-200"
                   >
                     <option value="member">Member</option>
                     <option value="admin">Admin</option>
@@ -62,7 +104,7 @@
                     name="email"
                     type="email"
                     required
-                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-200"
+                    class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-200"
                     :class="{ 'border-red-300': error }"
                   />
                 </div>
@@ -79,7 +121,7 @@
                     name="fullName"
                     type="text"
                     required
-                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-200"
+                    class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-200"
                   />
                 </div>
               </div>
@@ -95,7 +137,7 @@
                     name="password"
                     type="password"
                     required
-                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-200"
+                    class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-200"
                     :class="{ 'border-red-300': error }"
                   />
                 </div>
@@ -114,7 +156,7 @@
                     type="password"
                     required
                     placeholder="Enter admin access key"
-                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-200"
+                    class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-200"
                     :class="{ 'border-red-300': error }"
                   />
                 </div>
@@ -123,7 +165,7 @@
                 </p>
               </div>
 
-              <div v-if="error" class="rounded-md bg-red-50 p-4">
+              <div v-if="error" class="rounded-xl bg-red-50 p-4 border border-red-100">
                 <div class="flex">
                   <div class="flex-shrink-0">
                     <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -140,7 +182,7 @@
                 <button
                   type="submit"
                   :disabled="loading"
-                  class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg
                     v-if="loading"
@@ -276,7 +318,7 @@ const handleSubmit = async () => {
 }
 
 /* Form focus states */
-input:focus {
+input:focus, select:focus {
   outline: none;
   box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
 }
@@ -290,5 +332,39 @@ input:focus {
 
 .border-red-300 {
   animation: shake 0.5s ease-in-out;
+}
+
+/* Custom scrollbar */
+select::-webkit-scrollbar {
+  width: 8px;
+}
+
+select::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+select::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+select::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Hover effects */
+.group:hover .group-hover\:scale-105 {
+  transform: scale(1.05);
+}
+
+/* Gradient text */
+.bg-gradient-to-r {
+  background-image: linear-gradient(to right, var(--tw-gradient-stops));
+}
+
+/* Backdrop blur */
+.backdrop-blur-sm {
+  backdrop-filter: blur(4px);
 }
 </style> 

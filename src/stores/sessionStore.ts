@@ -1,6 +1,18 @@
 import { defineStore } from 'pinia'
 import { supabase } from '../supabase'
 
+interface User {
+  id: string
+  full_name: string
+  email: string
+}
+
+interface Booking {
+  id: string
+  notes: string | null
+  user: User
+}
+
 export interface Session {
   id: string
   title: string
@@ -12,6 +24,7 @@ export interface Session {
   created_by: string
   created_at: string
   appointments?: { count: number }[]
+  bookings?: Booking[]
 }
 
 export const useSessionStore = defineStore('sessions', {
@@ -31,7 +44,16 @@ export const useSessionStore = defineStore('sessions', {
           .from('sessions')
           .select(`
             *,
-            appointments:appointments(count)
+            appointments:appointments(count),
+            bookings:appointments(
+              id,
+              notes,
+              user:users(
+                id,
+                full_name,
+                email
+              )
+            )
           `)
           .order('date', { ascending: true })
 
@@ -39,7 +61,8 @@ export const useSessionStore = defineStore('sessions', {
 
         this.sessions = data.map(session => ({
           ...session,
-          appointments: session.appointments || []
+          appointments: session.appointments || [],
+          bookings: session.bookings || []
         }))
       } catch (e: any) {
         this.error = e.message
@@ -101,9 +124,47 @@ export const useSessionStore = defineStore('sessions', {
         this.loading = true
         this.error = null
 
+        // Get current session data
+        const currentSession = this.sessions.find(s => s.id === id)
+        if (!currentSession) {
+          throw new Error('Session not found')
+        }
+
         // Validate updates
-        if (updates.capacity !== undefined && updates.capacity < 1) {
+        if (updates.capacity !== undefined) {
+          if (updates.capacity < 1) {
           throw new Error('Capacity must be at least 1')
+          }
+          
+          // Check if new capacity is less than current bookings
+          const currentBookings = currentSession.appointments?.[0]?.count || 0
+          if (updates.capacity < currentBookings) {
+            throw new Error(`Cannot reduce capacity below current bookings (${currentBookings})`)
+          }
+        }
+
+        // Validate date changes
+        if (updates.date) {
+          const newDate = new Date(updates.date)
+          const now = new Date()
+          now.setHours(0, 0, 0, 0)
+          
+          if (newDate < now) {
+            throw new Error('Cannot move session to a past date')
+          }
+        }
+
+        // Validate time changes
+        if (updates.start_time && updates.end_time) {
+          if (updates.end_time <= updates.start_time) {
+            throw new Error('End time must be after start time')
+          }
+        } else if (updates.start_time || updates.end_time) {
+          const startTime = updates.start_time || currentSession.start_time
+          const endTime = updates.end_time || currentSession.end_time
+          if (endTime <= startTime) {
+            throw new Error('End time must be after start time')
+          }
         }
 
         const { data, error } = await supabase
@@ -112,7 +173,16 @@ export const useSessionStore = defineStore('sessions', {
           .eq('id', id)
           .select(`
             *,
-            appointments:appointments(count)
+            appointments:appointments(count),
+            bookings:appointments(
+              id,
+              notes,
+              user:users(
+                id,
+                full_name,
+                email
+              )
+            )
           `)
           .single()
 
@@ -123,7 +193,8 @@ export const useSessionStore = defineStore('sessions', {
         if (index !== -1) {
           this.sessions[index] = {
             ...data,
-            appointments: data.appointments || []
+            appointments: data.appointments || [],
+            bookings: data.bookings || []
           }
         }
 

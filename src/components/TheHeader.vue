@@ -1,8 +1,8 @@
 <template>
-  <header class="relative z-20">
+  <header class="relative z-20 w-full">
     <!-- Top Navigation Bar -->
-    <nav class="bg-gradient-to-r from-indigo-600 to-purple-600 relative">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav class="bg-gray-900 relative w-full">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 w-full">
         <div class="flex justify-between h-16">
           <!-- Logo and Brand -->
           <div class="flex items-center">
@@ -18,30 +18,33 @@
 
           <!-- Navigation Menu -->
           <div class="flex items-center space-x-4">
-            <button
-              @click="$emit('changeTab', 'sessions')"
-              class="px-3 py-2 text-sm font-medium rounded-md transition-all duration-200"
-              :class="activeTab === 'sessions' ? 'bg-white text-indigo-600' : 'text-white hover:bg-indigo-500'"
-            >
-              Available Sessions
-            </button>
-            <button
-              @click="$emit('changeTab', 'appointments')"
-              class="px-3 py-2 text-sm font-medium rounded-md transition-all duration-200"
-              :class="activeTab === 'appointments' ? 'bg-white text-indigo-600' : 'text-white hover:bg-indigo-500'"
-            >
-              My Bookings
-            </button>
+            <!-- Show different navigation based on user role -->
+            <template v-if="!isAdmin">
+              <button
+                @click="$emit('changeTab', 'sessions')"
+                class="px-4 py-2 text-sm font-medium rounded-md transition-all duration-200"
+                :class="activeTab === 'sessions' ? 'bg-white text-gray-900' : 'text-gray-200 hover:bg-gray-800'"
+              >
+                Available Sessions
+              </button>
+              <button
+                @click="$emit('changeTab', 'appointments')"
+                class="px-4 py-2 text-sm font-medium rounded-md transition-all duration-200"
+                :class="activeTab === 'appointments' ? 'bg-white text-gray-900' : 'text-gray-200 hover:bg-gray-800'"
+              >
+                My Bookings
+              </button>
+            </template>
 
             <!-- User Menu -->
             <div class="ml-3 relative user-menu">
               <div>
                 <button
                   @click="userMenuOpen = !userMenuOpen"
-                  class="flex items-center max-w-xs bg-white bg-opacity-20 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-indigo-600 focus:ring-white"
+                  class="flex items-center max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-white"
                 >
                   <span class="sr-only">Open user menu</span>
-                  <div class="h-8 w-8 rounded-full flex items-center justify-center bg-indigo-500 text-white">
+                  <div class="h-8 w-8 rounded-full flex items-center justify-center bg-gray-700 text-white">
                     {{ userInitials }}
                   </div>
                 </button>
@@ -57,7 +60,7 @@
                 <a
                   href="#"
                   @click.prevent="handleSignOut"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                 >
                   Sign out
                 </a>
@@ -68,18 +71,36 @@
       </div>
     </nav>
 
-    <!-- Hero Section -->
-    <div class="bg-gradient-to-b from-indigo-600 to-indigo-800 pb-32 relative">
-      <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <h2 class="text-3xl font-extrabold text-white">
-          {{ activeTab === 'sessions' ? 'Book Your Next Workout' : 'Your Fitness Journey' }}
-        </h2>
-        <p class="mt-4 text-lg text-indigo-200">
-          {{ activeTab === 'sessions' 
-            ? 'Choose from our wide range of fitness sessions and start your fitness journey today.'
-            : 'Track and manage your upcoming gym sessions.' }}
-        </p>
+    <!-- Hero Section - Show only for admin -->
+    <div v-if="isAdmin" class="bg-gradient-to-b from-gray-900 to-gray-800 relative w-full">
+      <div class="max-w-7xl mx-auto py-12 px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto text-center">
+          <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Session Management Dashboard</h2>
+          <p class="text-lg md:text-xl text-gray-300">
+            Manage your gym sessions, track bookings, and monitor member activity all in one place.
+          </p>
+        </div>
       </div>
+      <!-- Decorative bottom border -->
+      <div class="absolute bottom-0 w-full h-1 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800"></div>
+    </div>
+    
+    <!-- Hero Section - Show for non-admin users -->
+    <div v-else class="bg-gradient-to-b from-gray-900 to-gray-800 relative w-full">
+      <div class="max-w-7xl mx-auto py-12 px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto text-center">
+          <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
+            {{ activeTab === 'sessions' ? 'Book Your Next Workout' : 'Your Fitness Journey' }}
+          </h2>
+          <p class="text-lg md:text-xl text-gray-300">
+            {{ activeTab === 'sessions' 
+              ? 'Choose from our wide range of fitness sessions and start your fitness journey today.'
+              : 'Track and manage your upcoming gym sessions.' }}
+          </p>
+        </div>
+      </div>
+      <!-- Decorative bottom border -->
+      <div class="absolute bottom-0 w-full h-1 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800"></div>
     </div>
   </header>
 </template>
@@ -91,6 +112,7 @@ import { supabase } from '../supabase'
 const props = defineProps<{
   activeTab: string
   userEmail: string
+  isAdmin: boolean
 }>()
 
 const emit = defineEmits(['changeTab'])
@@ -111,12 +133,87 @@ const handleSignOut = async () => {
 </script>
 
 <style scoped>
-.bg-gradient-to-r {
-  background-size: 200% 200%;
-  animation: gradient 15s ease infinite;
+/* Add these styles to ensure proper layering */
+header {
+  position: relative;
+  z-index: 20;
+  width: 100%;
 }
 
-@keyframes gradient {
+nav {
+  position: relative;
+  z-index: 20;
+  width: 100%;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-menu {
+  position: relative;
+  z-index: 30;
+}
+
+/* Content Alignment */
+.content-wrapper {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+@media (min-width: 1024px) {
+  .content-wrapper {
+    padding: 0 4rem;
+  }
+}
+
+/* Hero Section Styles */
+.hero-section {
+  position: relative;
+  padding: 4rem 0;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Responsive Typography */
+@media (min-width: 768px) {
+  h2 {
+    font-size: 2.5rem;
+    line-height: 1.2;
+  }
+  
+  p {
+    font-size: 1.25rem;
+    line-height: 1.75;
+  }
+}
+
+/* Container Styles */
+.max-w-7xl {
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+/* Navigation Button Hover Effects */
+button {
+  transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+/* User Menu Styles */
+.user-menu button {
+  transition: all 0.2s ease-in-out;
+}
+
+.user-menu button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Gradient Animation */
+@keyframes gradientShift {
   0% {
     background-position: 0% 50%;
   }
@@ -128,19 +225,8 @@ const handleSignOut = async () => {
   }
 }
 
-/* Add these styles to ensure proper layering */
-header {
-  position: relative;
-  z-index: 20;
-}
-
-nav {
-  position: relative;
-  z-index: 20;
-}
-
-.user-menu {
-  position: relative;
-  z-index: 30;
+.bg-gradient-to-b {
+  background-size: 200% 200%;
+  animation: gradientShift 15s ease infinite;
 }
 </style> 
