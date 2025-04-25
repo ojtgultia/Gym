@@ -19,12 +19,7 @@
       <h3 class="mt-2 text-sm font-medium text-gray-900">No appointments</h3>
       <p class="mt-1 text-sm text-gray-500">Get started by booking a session.</p>
       <div class="mt-6">
-        <button
-          @click="$emit('changeTab', 'sessions')"
-          class="btn-primary"
-        >
-          Book a Session
-        </button>
+      
       </div>
     </div>
 

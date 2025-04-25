@@ -239,16 +239,41 @@ const handleSubmit = async () => {
 
     // Validate admin key if admin role is selected
     if (selectedRole.value === 'admin' && adminKey.value !== ADMIN_KEY) {
-      throw new Error('Invalid admin key')
+      throw new Error('Invalid admin key. Please contact your system administrator for the correct key.')
     }
 
     if (isLogin.value) {
+      // Check if email exists before attempting login
+      const { data: existingUser, error: checkError } = await supabase
+        .from('users')
+        .select('id, role')
+        .eq('email', email.value)
+        .single()
+
+      if (checkError && checkError.code !== 'PGRST116') {
+        throw new Error('Error checking account status. Please try again.')
+      }
+
+      if (!existingUser) {
+        throw new Error('No account found with this email. Please create an account first.')
+      }
+
+      // Check if selected role matches the user's role
+      if (existingUser.role !== selectedRole.value) {
+        throw new Error(`This account is registered as a ${existingUser.role}. Please select the correct role to sign in.`)
+      }
+
       const { data: { user }, error: signInError } = await supabase.auth.signInWithPassword({
         email: email.value,
         password: password.value,
       })
       
-      if (signInError) throw signInError
+      if (signInError) {
+        if (signInError.message.includes('Invalid login credentials')) {
+          throw new Error('Incorrect password. Please try again.')
+        }
+        throw signInError
+      }
 
       // Verify user role matches selected role
       if (user) {
@@ -263,12 +288,31 @@ const handleSubmit = async () => {
         if (userData.role !== selectedRole.value) {
           // Sign out the user if role doesn't match
           await supabase.auth.signOut()
-          throw new Error(`Invalid credentials for ${selectedRole.value} role`)
+          throw new Error(`This account is registered as a ${userData.role}. Please select the correct role to sign in.`)
         }
       }
     } else {
+      // Check if email already exists
+      const { data: existingUser, error: checkError } = await supabase
+        .from('users')
+        .select('id')
+        .eq('email', email.value)
+        .single()
+
+      if (checkError && checkError.code !== 'PGRST116') {
+        throw new Error('Error checking account status. Please try again.')
+      }
+
+      if (existingUser) {
+        throw new Error('An account with this email already exists. Please sign in instead.')
+      }
+
       if (password.value.length < 6) {
-        throw new Error('Password must be at least 6 characters long')
+        throw new Error('Password must be at least 6 characters long for security.')
+      }
+
+      if (!fullName.value.trim()) {
+        throw new Error('Please enter your full name.')
       }
 
       const { data: { user }, error: signUpError } = await supabase.auth.signUp({
@@ -276,7 +320,12 @@ const handleSubmit = async () => {
         password: password.value,
       })
       
-      if (signUpError) throw signUpError
+      if (signUpError) {
+        if (signUpError.message.includes('already registered')) {
+          throw new Error('This email is already registered. Please sign in instead.')
+        }
+        throw signUpError
+      }
       
       if (user) {
         // Create user profile in users table with selected role
@@ -291,14 +340,21 @@ const handleSubmit = async () => {
             }
           ])
         
-        if (profileError) throw profileError
+        if (profileError) {
+          if (profileError.code === '23505') {
+            throw new Error('This email is already registered. Please sign in instead.')
+          }
+          throw profileError
+        }
 
-        useToast().success('Account created successfully! Please check your email to verify your account.')
+        useToast().success('Account created successfully! Please check your email to verify your account before signing in.')
+        toggleAuthMode() // Switch to login mode after successful registration
         return
       }
     }
   } catch (e: any) {
     error.value = e.message
+    useToast().error(e.message)
   } finally {
     loading.value = false
   }

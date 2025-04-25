@@ -17,20 +17,20 @@
           </div>
 
           <!-- Navigation Menu -->
-          <div class="flex items-center space-x-4">
+          <div class="flex items-center space-x-2 sm:space-x-4">
             <!-- Show different navigation based on user role -->
             <template v-if="!isAdmin">
               <button
                 @click="$emit('changeTab', 'sessions')"
-                class="px-4 py-2 text-sm font-medium rounded-md transition-all duration-200"
-                :class="activeTab === 'sessions' ? 'bg-white text-gray-900' : 'text-gray-200 hover:bg-gray-800'"
+                class="px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-md transition-all duration-200"
+                :class="activeTab === 'sessions' ? 'bg-white text-gray-900' : 'text-gray-900 hover:bg-gray-800 hover:text-white'"
               >
                 Available Sessions
               </button>
               <button
                 @click="$emit('changeTab', 'appointments')"
-                class="px-4 py-2 text-sm font-medium rounded-md transition-all duration-200"
-                :class="activeTab === 'appointments' ? 'bg-white text-gray-900' : 'text-gray-200 hover:bg-gray-800'"
+                class="px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-md transition-all duration-200"
+                :class="activeTab === 'appointments' ? 'bg-white text-gray-900' : 'text-gray-900 hover:bg-gray-800 hover:text-white'"
               >
                 My Bookings
               </button>
@@ -44,14 +44,14 @@
                   class="flex items-center max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-white"
                 >
                   <span class="sr-only">Open user menu</span>
-                  <div class="h-8 w-8 rounded-full flex items-center justify-center bg-gray-700 text-white">
+                  <div class="h-6 w-6 sm:h-8 sm:w-8 rounded-full flex items-center justify-center bg-gray-700 text-white text-xs sm:text-sm">
                     {{ userInitials }}
                   </div>
                 </button>
               </div>
 
               <!-- Dropdown Menu -->
-              <div v-if="userMenuOpen" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5">
+              <div v-if="userMenuOpen" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-50">
                 <div class="px-4 py-2 text-xs text-gray-500">
                   Signed in as<br>
                   <span class="font-medium text-gray-900">{{ userEmail }}</span>
@@ -73,10 +73,10 @@
 
     <!-- Hero Section - Show only for admin -->
     <div v-if="isAdmin" class="bg-gradient-to-b from-gray-900 to-gray-800 relative w-full">
-      <div class="max-w-7xl mx-auto py-12 px-6 lg:px-8">
+      <div class="max-w-7xl mx-auto py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-4xl mx-auto text-center">
-          <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Session Management Dashboard</h2>
-          <p class="text-lg md:text-xl text-gray-300">
+          <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2 sm:mb-4">Session Management Dashboard</h2>
+          <p class="text-base sm:text-lg md:text-xl text-gray-300">
             Manage your gym sessions, track bookings, and monitor member activity all in one place.
           </p>
         </div>
@@ -87,12 +87,12 @@
     
     <!-- Hero Section - Show for non-admin users -->
     <div v-else class="bg-gradient-to-b from-gray-900 to-gray-800 relative w-full">
-      <div class="max-w-7xl mx-auto py-12 px-6 lg:px-8">
+      <div class="max-w-7xl mx-auto py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-4xl mx-auto text-center">
-          <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
+          <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2 sm:mb-4">
             {{ activeTab === 'sessions' ? 'Book Your Next Workout' : 'Your Fitness Journey' }}
           </h2>
-          <p class="text-lg md:text-xl text-gray-300">
+          <p class="text-base sm:text-lg md:text-xl text-gray-300">
             {{ activeTab === 'sessions' 
               ? 'Choose from our wide range of fitness sessions and start your fitness journey today.'
               : 'Track and manage your upcoming gym sessions.' }}
@@ -223,6 +223,7 @@ button:hover {
   100% {
     background-position: 0% 50%;
   }
+
 }
 
 .bg-gradient-to-b {

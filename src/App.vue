@@ -220,6 +220,7 @@ onMounted(async () => {
   max-width: 1440px;
 }
 
+
 .responsive-padding {
   @apply px-6 lg:px-8 py-6;
 }

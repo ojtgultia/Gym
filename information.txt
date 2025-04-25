@@ -1,0 +1,208 @@
+# Gym Booking Application Documentation
+
+## Overview
+A modern web application for managing gym sessions and member bookings, built with Vue 3, TypeScript, and Supabase.
+
+## Tech Stack
+- Frontend: Vue 3, TypeScript, Tailwind CSS
+- Backend: Supabase (PostgreSQL)
+- Authentication: Supabase Auth
+- Real-time Updates: Supabase Realtime
+
+## Database Schema
+
+### Users Table
+```sql
+users (
+  id: uuid (primary key)
+  email: string
+  role: enum ('admin', 'member')
+  created_at: timestamp
+  updated_at: timestamp
+)
+```
+
+### Sessions Table
+```sql
+sessions (
+  id: uuid (primary key)
+  title: string
+  description: text
+  date: date
+  start_time: time
+  end_time: time
+  instructor_name: string
+  spots_available: integer
+  created_at: timestamp
+  updated_at: timestamp
+)
+```
+
+### Appointments Table
+```sql
+appointments (
+  id: uuid (primary key)
+  user_id: uuid (foreign key -> users.id)
+  session_id: uuid (foreign key -> sessions.id)
+  notes: text
+  status: enum ('booked', 'cancelled')
+  created_at: timestamp
+  updated_at: timestamp
+)
+```
+
+## Components Structure
+
+### Core Components
+1. App.vue
+   - Main application component
+   - Handles routing and layout
+   - Manages authentication state
+
+2. TheHeader.vue
+   - Navigation bar
+   - User menu
+   - Role-based navigation
+   - Authentication status display
+
+3. AuthPage.vue
+   - Login/Signup forms
+   - Password reset functionality
+   - Social authentication options
+
+### Dashboard Components
+1. AdminDashboard.vue
+   - Session management
+   - User management
+   - Analytics and reports
+   - Real-time updates
+
+2. MemberDashboard.vue
+   - Available sessions view
+   - My appointments view
+   - Session booking
+   - Appointment management
+
+### Session Components
+1. SessionCard.vue
+   - Individual session display
+   - Booking status
+   - Session details
+   - Action buttons
+
+2. SessionList.vue
+   - List view of sessions
+   - Filtering options
+   - Sorting capabilities
+
+3. UserAppointments.vue
+   - Appointment management
+   - Cancellation functionality
+   - Appointment details
+
+### Utility Components
+1. Modal.vue
+   - Reusable modal dialog
+   - Customizable content
+   - Animation support
+
+2. Toast.vue
+   - Notification system
+   - Success/Error messages
+   - Auto-dismiss functionality
+
+3. LoadingSpinner.vue
+   - Loading indicators
+   - Progress feedback
+
+## Features
+
+### Authentication
+- Email/Password login
+- Social authentication
+- Password reset
+- Session persistence
+- Role-based access control
+
+### Session Management
+- Create/Edit/Delete sessions
+- Real-time availability updates
+- Session filtering and search
+- Category-based organization
+- Multiple view options (Grid/List/Calendar)
+
+### Booking System
+- Session booking
+- Appointment cancellation
+- Booking confirmation
+- Real-time slot updates
+- Conflict prevention
+
+### User Experience
+- Responsive design
+- Dark mode support
+- Loading states
+- Error handling
+- Toast notifications
+- Modal dialogs
+
+### Admin Features
+- User management
+- Session management
+- Analytics dashboard
+- Real-time monitoring
+- Bulk operations
+
+### Member Features
+- Session browsing
+- Booking management
+- Appointment history
+- Profile management
+- Notifications
+
+## State Management
+- Vue 3 Composition API
+- Pinia stores
+- Local storage
+- Session storage
+
+## API Integration
+- Supabase client
+- Real-time subscriptions
+- CRUD operations
+- File storage
+- Authentication
+
+## Security Features
+- JWT authentication
+- Role-based access
+- Input validation
+- XSS protection
+- CSRF protection
+
+## Performance Optimizations
+- Lazy loading
+- Code splitting
+- Image optimization
+- Caching strategies
+- Debounced search
+
+## Development Tools
+- Vite
+- TypeScript
+- ESLint
+- Prettier
+- Vue DevTools
+
+## Testing
+- Unit tests
+- Component tests
+- Integration tests
+- E2E tests
+
+## Deployment
+- CI/CD pipeline
+- Environment variables
+- Build optimization
+- Error tracking
+- Performance monitoring
