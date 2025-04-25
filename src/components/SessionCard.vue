@@ -39,35 +39,25 @@
       <!-- Action Button -->
       <div class="pt-2">
         <button
-          v-if="!isBooked"
           @click="$emit('book', session)"
-          :disabled="session.spots_available === 0"
+          :disabled="isBooked || session.spots_available === 0"
           class="w-full btn-primary justify-center"
           :class="{
-            'cursor-not-allowed': session.spots_available === 0,
-            'opacity-75': session.spots_available === 0
+            'cursor-not-allowed': isBooked || session.spots_available === 0,
+            'opacity-75': isBooked || session.spots_available === 0
           }"
         >
-          <span v-if="session.spots_available === 0">
+          <span v-if="isBooked" class="flex items-center">
+            <CheckCircleIcon class="h-4 w-4 mr-2" />
+            Already Booked
+          </span>
+          <span v-else-if="session.spots_available === 0">
             Session Full
           </span>
           <span v-else>
             Book Session
           </span>
         </button>
-        <div v-else class="space-y-2">
-          <div class="flex items-center justify-center text-sm text-indigo-600 font-medium">
-            <CheckCircleIcon class="h-4 w-4 mr-2" />
-            You've booked this session
-          </div>
-          <button
-            @click="$emit('cancel', appointmentId)"
-            class="w-full btn-secondary justify-center"
-          >
-            <XCircleIcon class="h-4 w-4 mr-2" />
-            Cancel Booking
-          </button>
-        </div>
       </div>
 
       <!-- Booked Badge -->
@@ -82,7 +72,7 @@
 </template>
 
 <script setup lang="ts">
-import { ClockIcon, UserGroupIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/vue/24/solid'
+import { ClockIcon, UserGroupIcon, CheckCircleIcon } from '@heroicons/vue/24/solid'
 
 const props = defineProps({
   session: {
@@ -92,14 +82,8 @@ const props = defineProps({
   isBooked: {
     type: Boolean,
     default: false
-  },
-  appointmentId: {
-    type: String,
-    default: null
   }
 })
-
-const emit = defineEmits(['book', 'cancel'])
 
 const formatDate = (date: string) => {
   return new Date(date).toLocaleDateString('en-US', {
@@ -127,14 +111,6 @@ const formatTime = (time: string) => {
   @apply px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl 
     hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 
     focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 
-    disabled:cursor-not-allowed transition-all duration-200 flex items-center 
-    shadow-sm hover:shadow-md;
-}
-
-.btn-secondary {
-  @apply px-4 py-2 bg-gradient-to-r from-red-600 to-rose-600 text-white rounded-xl 
-    hover:from-red-700 hover:to-rose-700 focus:outline-none focus:ring-2 
-    focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 
     disabled:cursor-not-allowed transition-all duration-200 flex items-center 
     shadow-sm hover:shadow-md;
 }

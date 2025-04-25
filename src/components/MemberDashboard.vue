@@ -109,9 +109,7 @@
           :key="session.id"
           :session="session"
           :is-booked="session.isBooked"
-          :appointment-id="session.userAppointmentId"
           @book="bookSession"
-          @cancel="cancelAppointment"
         />
       </div>
     </div>
@@ -175,6 +173,53 @@
         </div>
       </template>
     </Modal>
+
+    <!-- Add Cancellation Modal -->
+    <Modal v-model="showCancellationModal">
+      <template #header>
+        <h3 class="text-lg sm:text-xl font-semibold text-gray-900">Cancel Appointment</h3>
+      </template>
+      <template #body>
+        <div v-if="selectedSession" class="space-y-4 sm:space-y-6">
+          <div class="bg-gradient-to-br from-red-50 to-pink-50 p-4 sm:p-6 rounded-xl border border-red-100">
+            <h4 class="text-base sm:text-lg font-semibold text-gray-900">{{ selectedSession.title }}</h4>
+            <div class="mt-2 space-y-1">
+              <p class="text-xs sm:text-sm text-gray-600">
+                <svg class="inline-block h-3 w-3 sm:h-4 sm:w-4 mr-1 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                {{ formatDate(selectedSession.date) }}
+              </p>
+              <p class="text-xs sm:text-sm text-gray-600">
+                <svg class="inline-block h-3 w-3 sm:h-4 sm:w-4 mr-1 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {{ formatTime(selectedSession.start_time) }} - {{ formatTime(selectedSession.end_time) }}
+              </p>
+            </div>
+          </div>
+          <p class="text-xs sm:text-sm text-gray-600">
+            Are you sure you want to cancel this appointment? This action cannot be undone.
+          </p>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end space-x-2 sm:space-x-3">
+          <button
+            @click="showCancellationModal = false"
+            class="btn-secondary text-xs sm:text-sm"
+          >
+            Keep Booking
+          </button>
+          <button
+            @click="cancelAppointment(selectedSession.userAppointment.id)"
+            class="btn-danger text-xs sm:text-sm"
+          >
+            Cancel Appointment
+          </button>
+        </div>
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -202,6 +247,7 @@ const filterType = ref('all')
 const showBookingModal = ref(false)
 const selectedSession = ref(null)
 const isBooking = ref(false)
+const showCancellationModal = ref(false)
 
 // Computed
 const availableSessions = computed(() => sessionStore.getAvailableSessions.length)
@@ -254,15 +300,16 @@ const filteredSessions = computed(() => {
   isBooked: appointmentStore.getUserAppointments.some(
     appointment => appointment.session_id === session.id
   ),
-  userAppointmentId: appointmentStore.getUserAppointments.find(
+  userAppointment: appointmentStore.getUserAppointments.find(
     appointment => appointment.session_id === session.id
-  )?.id
+  )
 }))
 
 // Methods
 const bookSession = (session) => {
   if (session.isBooked) {
-    toast.info('You have already booked this session')
+    selectedSession.value = session
+    showCancellationModal.value = true
     return
   }
   selectedSession.value = session
@@ -305,7 +352,7 @@ const cancelAppointment = async (appointmentId) => {
     if (result.success) {
       toast.success('Appointment cancelled successfully')
       await sessionStore.fetchSessions()
-      await appointmentStore.fetchUserAppointments()
+      showCancellationModal.value = false
     } else {
       toast.error(result.error || 'Failed to cancel appointment')
     }
@@ -387,5 +434,13 @@ const formatTime = (time: string) => {
 .card {
   @apply bg-white rounded-xl shadow-sm border border-gray-200 
     hover:shadow-md transition-all duration-200;
+}
+
+.btn-danger {
+  @apply px-4 py-2 bg-gradient-to-r from-red-600 to-pink-600 text-white rounded-xl 
+    hover:from-red-700 hover:to-pink-700 focus:outline-none focus:ring-2 
+    focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 
+    disabled:cursor-not-allowed transition-all duration-200 flex items-center 
+    shadow-sm hover:shadow-md;
 }
 </style>
