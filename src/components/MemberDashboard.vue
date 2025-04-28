@@ -234,6 +234,7 @@ import Modal from './Modal.vue'
 import SessionCard from './SessionCard.vue'
 import AppointmentList from './AppointmentList.vue'
 import LoadingSpinner from './LoadingSpinner.vue'
+import axios from 'axios'
 
 // Stores
 const sessionStore = useSessionStore()
@@ -306,6 +307,8 @@ const filteredSessions = computed(() => {
 }))
 
 // Methods
+
+// Book Session
 const bookSession = (session) => {
   if (session.isBooked) {
     selectedSession.value = session
@@ -316,9 +319,12 @@ const bookSession = (session) => {
   showBookingModal.value = true
 }
 
+// Confirm Booking (using axios)
 const confirmBooking = async () => {
   try {
     isBooking.value = true
+    
+    // Assuming user info is fetched from Supabase or elsewhere
     const { data: { user } } = await supabase.auth.getUser()
     
     if (!user) {
@@ -326,41 +332,46 @@ const confirmBooking = async () => {
       return
     }
 
-    const result = await appointmentStore.createAppointment({
+    const bookingData = {
       user_id: user.id,
       session_id: selectedSession.value.id,
-      notes: ''
-    })
+      notes: '' // You can add more notes or data as needed
+    }
 
-    if (result.success) {
+    // Make an API call to book the session (using axios)
+    const response = await axios.post('https://booking/book', bookingData)
+
+    if (response.status === 200 && response.data.success) {
       toast.success('Session booked successfully!')
       showBookingModal.value = false
-      await sessionStore.fetchSessions()
+      await sessionStore.fetchSessions() // Refresh the sessions after booking
     } else {
-      toast.error(result.error || 'Failed to book session')
+      toast.error(response.data.error || 'Failed to book session')
     }
   } catch (error: any) {
-    toast.error(error.message)
+    toast.error(error.message || 'Something went wrong while confirming booking')
   } finally {
     isBooking.value = false
   }
 }
 
+// Cancel Appointment (using axios)
 const cancelAppointment = async (appointmentId) => {
   try {
-    const result = await appointmentStore.cancelAppointment(appointmentId)
-    if (result.success) {
+    // Call an API to cancel the appointment (using axios)
+    const response = await axios.post('https://appointment/cancel', { appointmentId })
+
+    if (response.status === 200 && response.data.success) {
       toast.success('Appointment cancelled successfully')
-      await sessionStore.fetchSessions()
+      await sessionStore.fetchSessions() // Refresh sessions after cancellation
       showCancellationModal.value = false
     } else {
-      toast.error(result.error || 'Failed to cancel appointment')
+      toast.error(response.data.error || 'Failed to cancel appointment')
     }
   } catch (error: any) {
-    toast.error(error.message)
+    toast.error(error.message || 'Something went wrong while cancelling appointment')
   }
 }
-
 // Lifecycle
 onMounted(async () => {
   await Promise.all([
