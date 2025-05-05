@@ -199,7 +199,6 @@
   import { supabase } from '../supabase'
   import Modal from './Modal.vue'
   import SessionCard from './SessionCard.vue'
-  import AppointmentList from './AppointmentList.vue'
   import LoadingSpinner from './LoadingSpinner.vue'
   import axios from 'axios'
   
