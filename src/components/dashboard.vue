@@ -114,17 +114,7 @@
         </div>
       </div>
   
-      <!-- My Appointments View -->
-      <div v-if="activeView === 'appointments'" class="space-y-4 sm:space-y-6">
-        <div class="flex justify-between items-center">
-          <h2 class="text-xl sm:text-2xl font-semibold text-gray-900">My Appointments</h2>
-        </div>
-        <AppointmentList
-          :appointments="userAppointments"
-          @cancel="cancelAppointment"
-        />
-      </div>
-  
+    
       <!-- Booking Confirmation Modal -->
       <Modal v-model="showBookingModal">
         <template #header>
