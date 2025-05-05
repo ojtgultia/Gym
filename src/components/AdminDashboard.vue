@@ -190,14 +190,14 @@
       <template #body>
         <form @submit.prevent="handleSessionSubmit" class="space-y-4">
           <div>
-            <label for="title" class="form-label">Title</label>
+            <label for="title" class="form-label">Trainer Details</label>
             <input
               type="text"
               id="title"
               v-model="sessionForm.title"
               required
               :class="['form-input', { error: errors.title }]"
-              placeholder="Enter session title"
+              placeholder="Enter name"
             />
             <p v-if="errors.title" class="form-error">{{ errors.title }}</p>
           </div>
