@@ -380,44 +380,4 @@
   }
   </script>
   
-  <style scoped>
-  .btn-primary {
-    @apply px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl 
-      hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 
-      focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 
-      disabled:cursor-not-allowed transition-all duration-200 flex items-center 
-      shadow-sm hover:shadow-md;
-  }
   
-  .btn-secondary {
-    @apply px-4 py-2 bg-white text-gray-700 rounded-xl border border-gray-300 
-      hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 
-      focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed 
-      transition-all duration-200 shadow-sm hover:shadow-md;
-  }
-  
-  .form-input {
-    @apply block w-full rounded-xl border-gray-300 shadow-sm 
-      focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm 
-      transition-all duration-200;
-  }
-  
-  .form-select {
-    @apply block w-full rounded-xl border-gray-300 shadow-sm 
-      focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm 
-      transition-all duration-200;
-  }
-  
-  .card {
-    @apply bg-white rounded-xl shadow-sm border border-gray-200 
-      hover:shadow-md transition-all duration-200;
-  }
-  
-  .btn-danger {
-    @apply px-4 py-2 bg-gradient-to-r from-red-600 to-pink-600 text-white rounded-xl 
-      hover:from-red-700 hover:to-pink-700 focus:outline-none focus:ring-2 
-      focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 
-      disabled:cursor-not-allowed transition-all duration-200 flex items-center 
-      shadow-sm hover:shadow-md;
-  }
-  </style>
